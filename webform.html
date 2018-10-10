@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>TrustedForm Demo</title>
+	<style>
+		body {background-color: #253842; font-family: "proxima nova", sans-serif; color: #6fb3c1; width: 400px; margin: 0 auto; padding: 20px; font-size: 18px;}
+		input {background-color: #6fb3c1!important; display: block; margin: 10px 0; min-width: 250px; padding: 6px 0; font-size: 14px;}
+		input[type="text"], input[type="password"], input[type="email"], textarea {color: #fff;}
+		#submit_test_form {background-color: #F37021; -webkit-border-radius: 4px; border: none; color: #fff; font-size: 14px;}
+		a {color:#fff;}
+	</style>
+</head>
+<body>
+	<div id="test-form">
+        <h1>Brontosaurus FOREVER!</h1>
+		<form method="post" id="test_form" name="test_form" action="https://app.leadconduit.com/flows/5afddae6c7b3a40478d7b144/sources/56ddf55401a7c994452e8ca5/submit?redir_url=http%3A%2F%2Factiveprospect.com">
+			<input type="text" name="fname" placeholder="first name" value="Test">
+			<input type="text" name="lname" placeholder="last name" value="Customer">
+			<input type="text" name="phone_number" placeholder="phone" value="512.551.1359">
+			<input type="text" name="email_address" placeholder="email" value="support@activeprospect.com">
+            <input type="hidden" name="reference_code" placeholder="reference code" value="I was raised by a cup of coffee">
+			<button type="submit" id="submit_test_form">Contact Us</button>
+		</form>
+	</div>
+<!-- BEGIN Generate a TrustedForm Certificate -->
+<script type="text/javascript">
+(function() {
+    var field = 'xxTrustedFormCertUrl';
+    var provideReferrer = false;
+    var tf = document.createElement('script');
+    tf.type = 'text/javascript'; tf.async = true;
+    tf.src = 'http' + ('https:' == document.location.protocol ? 's' : '') +
+    '://api.trustedform.com/trustedform.js?provide_referrer=' + escape(provideReferrer) + '&field=' + escape(field) + '&l='+new Date().getTime()+Math.random();
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(tf, s); }
+)();
+</script>
+<noscript>
+    <img src="http://api.trustedform.com/ns.gif" />
+</noscript>
+<!-- END Generate a TrustedForm Certificate -->
+<!-- Temporary Alert Code -->
+<script type="text/javascript">
+    function trustedFormCertUrlCallback(certificateUrl) {
+        console.log(certificateUrl);
+    }
+</script>
+<!-- END Temporary Alert Code -->
+<!-- LC GET on Page Load -->
+<!-- <script type="text/javascript">
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", "https://app.leadconduit.com/flows/5b199396661ebc83fbfdb113/sources/56ddf55401a7c994452e8ca5/submit?first_name=HULK&last_name=SMASH&email=hulk.smash@activeprospect.com&reference=47&campaign_id=Puny Banner", true);
+	xhr.onload = function (e) {
+	  if (xhr.readyState === 4) {
+	    if (xhr.status === 201) {
+	      console.log(xhr.responseText);
+	    } else {
+	      console.error(xhr.statusText);
+	    }
+	  }
+	};
+	xhr.onerror = function (e) {
+	  console.error(xhr.statusText);
+	};
+	xhr.send(null);
+</script> -->
+
+</body>
+</html>
