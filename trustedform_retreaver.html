@@ -57,7 +57,7 @@
 					// run updateTags function before unloading the page
 					document.getElementById('test_form').addEventListener("beforeunload", function(){
 						updateTags();
-					}
+					});
 					
 					var link = '<a href="tel:' + number.get('number') + '">' + number.get('formatted_number') + '</a>';
 	                document.getElementById('phone-number').innerHTML = link;
