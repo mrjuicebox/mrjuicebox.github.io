@@ -10,7 +10,32 @@
 		#submit_test_form {background-color: #F37021; -webkit-border-radius: 4px; border: none; color: #fff; font-size: 14px;}
 		a {color:#fff;}
 	</style>
-	<script type="text/javascript">(function(){var a=document.createElement("script");a.type="text/javascript";a.async=!0;a.defer=!0;a.src=document.location.protocol+"//dist.routingapi.com/jsapi/v1/retreaver.min.js";a.onload=a.onreadystatechange=function(){Retreaver.configure({host:"api.routingapi.com",prefix:"https:"==document.location.protocol?"https":"http"});(new Retreaver.Campaign({campaign_key:"b9c20ce75dc6cf5089064dc578ec12d6"})).auto_replace_numbers()};(document.getElementsByTagName("head")[0]||document.getElementsByTagName("body")[0]).appendChild(a)})();</script>
+	<script type="text/javascript">
+	    (function () {
+	        var scriptElement = document.createElement('script');
+	        scriptElement.type = 'text/javascript';
+	        scriptElement.async = true;
+	        scriptElement.defer = true;
+	        scriptElement.src = document.location.protocol + '//dist.routingapi.com/jsapi/v1/retreaver.min.js';
+	        scriptElement.onload = scriptElement.onreadystatechange = function () {
+
+	            Retreaver.configure({
+	                host: 'api.routingapi.com',
+	                prefix: document.location.protocol == 'https:' ? 'https' : 'http'
+	            });
+
+	            // Your code goes here!
+	            var campaign = new Retreaver.Campaign({campaign_key: 'b9c20ce75dc6cf5089064dc578ec12d6'});
+
+	            campaign.request_number(function (number) {
+	                var link = '<a href="tel:' + number.get('number') + '">' + number.get('formatted_number') + '</a>';
+	                document.getElementById('phone-number').innerHTML = link;
+	            });
+	            // End your code... make sure to add <div id="phone-number"></div> somewhere in the body!
+	        };
+	        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(scriptElement);
+	    })();
+	</script>
 </head>
 <body>
 	<div id="test-form">
