@@ -55,9 +55,12 @@
 					}
 					
 					// run updateTags function before unloading the page
-					document.getElementById('test_form').addEventListener("beforeunload", function(){
+					document.getElementById('test_form').addEventListener("submit", function(){
 						updateTags();
+						number.initiate_call(phone_1, {first_name: first_name, email: email, dial: phone_1, live_agent: true}, callInitiated);
+						function callInitiated(call) {}
 					});
+
 					
 					var link = '<a href="tel:' + number.get('number') + '">' + number.get('formatted_number') + '</a>';
 	                document.getElementById('phone-number').innerHTML = link;
