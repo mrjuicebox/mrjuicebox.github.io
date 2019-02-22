@@ -28,6 +28,59 @@
 	            var campaign = new Retreaver.Campaign({campaign_key: 'b9c20ce75dc6cf5089064dc578ec12d6'});
 
 	            campaign.request_number(function (number) {
+
+					//These variables will store your form data, You must customize it to suit your form
+					var first_name, last_name, email, phone_1, reference, xxTrustedFormCertUrl;
+					          
+					//Each field in your form comes with a label and a child input element, by going into the parent of the label, you can access the sub-elements 
+					//From the parent of the label, you can find the input element within, pulling the value and using it to update the numbers tags
+					function updateTags() {
+					   first_name = document.getElementById('first_name').value();
+					   last_name = document.getElementById('last_name').value();
+					   email = document.getElementById('email').value();
+					   phone_1 = document.getElementById('phone_1').value();
+					   if(document.getElementById('xxTrustedFormCertUrl_0')){xxTrustedFormCertUrl_0 = document.getElementById('xxTrustedFormCertUrl_0').value()};
+					   reference = document.getElementById('reference').value();
+
+					   //update tags associated with displayed number, key:value - where key is created and managed within the retreaver platform, 
+					   //and value is pulled from our previously stored variables
+					   number.replace_tags({
+					      first_name: first_name,
+					      last_name: last_name,
+					      email: email,
+					      phone_1: phone_1,
+					      reference: reference,
+					      trustedform_cert_url: xxTrustedFormCertUrl
+					   });
+					}
+
+					//Helper function controls the rate that a supplied function runs, updating too frequently is resource expensive
+					function debounce(func, wait, immediate) {
+					     var timeout;
+					     return function() {
+					        var context = this, args = arguments;
+
+					        var later = function() {
+					           timeout = null;
+					           if (!immediate) func.apply(context, args);
+					        };
+
+					        var callNow = immediate && !timeout;
+					        clearTimeout(timeout);
+					        timeout = setTimeout(later, wait);
+					        if (callNow) func.apply(context, args);
+					     }
+					}
+
+					//calls updateTags function every 0.250 seconds, updating tags associated with the current displayed number based on current values stored on your form
+					var debounced = debounce(updateTags, 250);
+
+					//Ontop of timed updating, anytime the form is altered or submitted, run your custom updateTags function again
+					$('form').change(debounced).submit(updateTags);
+					$('input').keyup(debounced);
+					debounced();
+
+
 	                var link = '<a href="tel:' + number.get('number') + '">' + number.get('formatted_number') + '</a>';
 	                document.getElementById('phone-number').innerHTML = link;
 	            });
@@ -41,11 +94,11 @@
 	<div id="test-form">
         <h1>Brontosaurus FOREVER!</h1>
 		<form method="post" id="test_form" name="test_form" action="https://app.leadconduit.com/flows/5b6e0c6c7caa03078d537875/sources/5bb3cc3328c2e33749876eeb/submit?redir_url=http%3A%2F%2Factiveprospect.com">
-			<input type="text" name="first_name" placeholder="first name" value="Test">
-			<input type="text" name="last_name" placeholder="last name" value="Customer">
-			<input type="text" name="phone_1" placeholder="phone" value="512.555.1234">
-			<input type="text" name="email" placeholder="email" value="support@activeprospect.com">
-            <input type="hidden" name="reference" placeholder="reference code" value="I was raised by a cup of coffee">
+			<input type="text" name="first_name" id="first_name" placeholder="first name" value="Test">
+			<input type="text" name="last_name" id="last_name" placeholder="last name" value="Customer">
+			<input type="text" name="phone_1" id="phone_1" placeholder="phone" value="512.555.1234">
+			<input type="text" name="email" id="email" placeholder="email" value="support@activeprospect.com">
+            <input type="hidden" name="reference" id="reference" placeholder="reference code" value="I was raised by a cup of coffee">
 			<button type="submit" id="submit_test_form">Contact Us</button>
 		</form>
 		<p>I hereby consent to receive <a href="https://en.wikipedia.org/wiki/Auto_dialer">autodialed</a> and/or pre-recorded telemarketing calls from or on behalf of Sample Company at the telephone number I provided above, including my wireless number, if applicable. I understand that consent is not a condition of purchase.</p>
