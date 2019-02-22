@@ -53,35 +53,13 @@
 					      trustedform_cert_url: xxTrustedFormCertUrl
 					   });
 					}
-
-					//Helper function controls the rate that a supplied function runs, updating too frequently is resource expensive
-					function debounce(func, wait, immediate) {
-					     var timeout;
-					     return function() {
-					        var context = this, args = arguments;
-
-					        var later = function() {
-					           timeout = null;
-					           if (!immediate) func.apply(context, args);
-					        };
-
-					        var callNow = immediate && !timeout;
-					        clearTimeout(timeout);
-					        timeout = setTimeout(later, wait);
-					        if (callNow) func.apply(context, args);
-					     }
+					
+					// run updateTags function before unloading the page
+					document.getElementById('test_form').addEventListener("beforeunload", function(){
+						updateTags();
 					}
-
-					//calls updateTags function every 0.250 seconds, updating tags associated with the current displayed number based on current values stored on your form
-					var debounced = debounce(updateTags, 250);
-
-					//Ontop of timed updating, anytime the form is altered or submitted, run your custom updateTags function again
-					$('form').change(debounced).submit(updateTags);
-					$('input').keyup(debounced);
-					debounced();
-
-
-	                var link = '<a href="tel:' + number.get('number') + '">' + number.get('formatted_number') + '</a>';
+					
+					var link = '<a href="tel:' + number.get('number') + '">' + number.get('formatted_number') + '</a>';
 	                document.getElementById('phone-number').innerHTML = link;
 	            });
 	            // End your code... make sure to add <div id="phone-number"></div> somewhere in the body!
