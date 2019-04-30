@@ -25,15 +25,16 @@
 		</form>
 <!-- BEGIN Generate a TrustedForm Certificate -->
 <script type="text/javascript">
-(function() {
-    var field = 'xxTrustedFormCertUrl';
-    var provideReferrer = false;
-    var tf = document.createElement('script');
-    tf.type = 'text/javascript'; tf.async = true;
-    tf.src = 'http' + ('https:' == document.location.protocol ? 's' : '') +
-    '://api.trustedform.com/trustedform.js?provide_referrer=' + escape(provideReferrer) + '&field=' + escape(field) + '&l='+new Date().getTime()+Math.random();
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(tf, s); }
-)();
+  (function() {
+      var field = 'xxTrustedFormCertUrl';
+      var provideReferrer = false;
+      var invertFieldSensitivity = false;
+      var tf = document.createElement('script');
+      tf.type = 'text/javascript'; tf.async = true;
+      tf.src = 'http' + ('https:' == document.location.protocol ? 's' : '') +
+        '://api.trustedform.com/trustedform.js?provide_referrer=' + escape(provideReferrer) + '&field=' + escape(field) + '&l='+new Date().getTime()+Math.random() + '&invert_field_sensitivity=' + invertFieldSensitivity;
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(tf, s); }
+  )();
 </script>
 <noscript>
     <img src="http://api.trustedform.com/ns.gif" />
@@ -42,7 +43,7 @@
 		<p>I hereby consent to receive <a href="https://en.wikipedia.org/wiki/Auto_dialer">autodialed</a> and/or pre-recorded telemarketing calls from or on behalf of Sample Company at the telephone number I provided above, including my wireless number, if applicable. I understand that consent is not a condition of purchase.</p>		
 	</div>
 
-<!-- Temporary Alert Code -->
+<!--  Callback Console Log -->
 <script type="text/javascript">
     function trustedFormCertUrlCallback(certificateUrl) {
         console.log(certificateUrl);
