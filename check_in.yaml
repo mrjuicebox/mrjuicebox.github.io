@@ -6,6 +6,8 @@ info:
   description: |
     # Overview
     ActiveProspect provides the TrustedForm Check-In API to enable TrustedForm non-client vendors to extend the claim period of certificates for lead buyers who want to claim TrustedForm certificates beyond the standard claim period.
+    
+    Only vendors selling aged leads or call center qualified leads should need to extend a certificate. Other use cases should be verified with the ActiveProspect team.
 
     ## Claim Period
     The "claim period" is the timeframe within which a TrustedForm Certificate is issued and must be claimed or extended by a TrustedForm Account holder, else it will expire. 
@@ -14,9 +16,6 @@ info:
     * The extended claim period is approximately 2,400 hours. 
 
     Within the claim period, TrustedForm Certificates are visible to anyone with access to the TrustedForm Certificate URL. After this period, only claimed TrustedForm Certificates are accessible by the TrustedForm account holders that claimed them.
-
-    ## Extending a Certificate
-    Only vendors selling aged leads or call center qualified leads should need to extend a certificate. Other use cases should be verified with the ActiveProspect team.
 
     ## Requirements
     To extend the claim period, vendors must make an authenticated POST
