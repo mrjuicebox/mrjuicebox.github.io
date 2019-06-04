@@ -1,0 +1,119 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: TrustedForm Check-In API
+  termsOfService: 'https://activeprospect.com/trustedform-eula'
+  description: |
+    # Overview
+    ActiveProspect provides the TrustedForm Check-In API to enable TrustedForm non-client vendors to extend the claim period of certificates for lead buyers who want to claim TrustedForm certificates beyond the standard claim period.
+
+    # Claim Period
+    The "claim period" is the timeframe within which a TrustedForm Certificate is issued and must be claimed or extended by a TrustedForm Account holder, else it will expire. 
+
+    * The standard claim period is approximately 72 hours. 
+    * The extended claim period is approximately 2,400 hours. 
+
+    Within the claim period, TrustedForm Certificates are visible to anyone with access to the TrustedForm Certificate URL. After this period, only claimed TrustedForm Certificates are accessible by the TrustedForm account holders that claimed them.
+
+    ## Requirements
+    To extend the claim period, vendors must make an authenticated POST
+    
+    * For vendors without an ActiveProspect Account, please [sign up for an ActiveProspect Account](https://sso.activeprospect.com/registration/new?product=extend). Creating an account generates the API required to successfully extend certificates.
+    * For vendors with an ActiveProspect Account who are not currently TrustedForm clients, please [Log in to your account](https://sso.activeprospect.com/).
+    * For vendors with an ActiveProspect Account who are TrustedForm clients, **you do not need a separate action to extend certificates**. Claiming your certificates already extends the claim period as long as your account is [enabled for extended claim](https://app.trustedform.com/#settings).
+
+    The ActiveProspect API Key is available in ActiveProspect > [My Account](https://sso.activeprospect.com/account) > Account Settings
+
+    ## [Extending a Certificate](#operation/check_in)
+    Append `check_in` to the end of the certificate URL.
+
+    For example, `https://cert.trustedform.com/c779c6ff33d4347a1508338bfb4f768cdb16d621/check_in`
+
+    Make an authenticated POST, including a JSON-encoded object, where one of the constituent keys is `extend` with the boolean value `true`.
+
+    The [standard claim period](https://support.activeprospect.com/hc/en-us/articles/204744025-Are-TrustedForm-certificates-available-indefinitely-) still applies.
+
+    <security-definitions /> 
+
+  contact:
+    name: ActiveProspect Support Team
+    email: support@activeprospect.com
+    url: https://support.activeprospect.com
+  x-logo:
+    url: https://activeprospect.com/wp-content/themes/activeprospect/assets/images/activeprospect-logo.svg
+    altText: ActiveProspect logo
+externalDocs:
+  description: TrustedForm Knowledge Base
+  url: https://support.activeprospect.com/hc/en-us/categories/200128909-TrustedForm
+
+# tags:
+#   - name: check_in
+#     description: Operations that can be performed against the Check-In API
+# x-tagGroups:
+#   - name: Check-In Operations
+#     tags:
+#       - check_in
+paths:
+  '/{cert_id}/check_in':
+    post:
+      summary: Check-In
+      description: |
+        Extending a certificate switches it from the Standard claim period (approximately 72 hours) to the Extended claim period (approximately 2,400 hours).
+
+        Append `/check_in` to the certificate URL and perform an authenticated `POST`, including a JSON-encoded object, where one of the constituent keys is `extend` with the boolean value `true`, e.g. `{"extend": true}`.
+
+        The [standard claim period](https://support.activeprospect.com/hc/en-us/articles/204744025-Are-TrustedForm-certificates-available-indefinitely-) still applies.        
+      tags:
+        - Check-In URL Operations
+      operationId: check_in
+      parameters:
+        - name: cert_id
+          in: path
+          description: Certificate ID
+          required: true
+          deprecated: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Check-In Data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckInResponse'
+        '400':
+          description: Malformed Certificate URL
+        '401':
+          description: Unauthorized
+        '404':
+          description: Certificate Not Found
+      servers:
+        - url: https://cert.trustedform.com
+      security:
+        - API Key: []
+      x-code-samples:
+        - lang: 'curl'
+          source: |
+            API_KEY="f3bff7c5140a10ab5ff2e628f433f0bb51d255d1a"
+            CERT_ID="1f1b96c9150d8050e858c043d543bb4eadae0e6f"
+            curl --user "API:$API_KEY" \
+                 --header "Accept: application/json" \
+                 --request POST \
+                 --data '{"extend": true}' \
+                 https://cert.trustedform.com/$CERT_ID/check_in
+
+components:
+  schemas:
+    CheckInResponse:
+      description: An HTTP status code generated from a Certificate URL.
+      properties:
+        status_code:
+          type: string
+
+  securitySchemes:
+    API Key:
+      scheme: basic
+      description: >
+        TrustedForm uses [HTTP Basic Authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) with the username `API` and your API key as the password.
+        For example: `API:1f1b96c9150d8050e858c043d543bb4eadae0e6f`
+      type: http
