@@ -24,7 +24,7 @@ info:
 
     The ActiveProspect API Key is available in ActiveProspect > [My Account](https://sso.activeprospect.com/account) > Account Settings
 
-    ## [Extending a Certificate](#operation/check_in)
+    ## Extending a Certificate
     Append `check_in` to the end of the certificate URL.
 
     For example, `https://cert.trustedform.com/c779c6ff33d4347a1508338bfb4f768cdb16d621/check_in`
