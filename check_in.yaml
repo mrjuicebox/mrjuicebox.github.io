@@ -7,13 +7,16 @@ info:
     # Overview
     ActiveProspect provides the TrustedForm Check-In API to enable TrustedForm non-client vendors to extend the claim period of certificates for lead buyers who want to claim TrustedForm certificates beyond the standard claim period.
 
-    # Claim Period
+    ## Claim Period
     The "claim period" is the timeframe within which a TrustedForm Certificate is issued and must be claimed or extended by a TrustedForm Account holder, else it will expire. 
 
     * The standard claim period is approximately 72 hours. 
     * The extended claim period is approximately 2,400 hours. 
 
     Within the claim period, TrustedForm Certificates are visible to anyone with access to the TrustedForm Certificate URL. After this period, only claimed TrustedForm Certificates are accessible by the TrustedForm account holders that claimed them.
+
+    ## Extending a Certificate
+    Only vendors selling aged leads or call center qualified leads should need to extend a certificate. Other use cases should be verified with the ActiveProspect team.
 
     ## Requirements
     To extend the claim period, vendors must make an authenticated POST
@@ -23,15 +26,6 @@ info:
     * For vendors with an ActiveProspect Account who are TrustedForm clients, **you do not need a separate action to extend certificates**. Claiming your certificates already extends the claim period as long as your account is [enabled for extended claim](https://app.trustedform.com/#settings).
 
     The ActiveProspect API Key is available in ActiveProspect > [My Account](https://sso.activeprospect.com/account) > Account Settings
-
-    ## Extending a Certificate
-    Append `check_in` to the end of the certificate URL.
-
-    For example, `https://cert.trustedform.com/c779c6ff33d4347a1508338bfb4f768cdb16d621/check_in`
-
-    Make an authenticated POST, including a JSON-encoded object, where one of the constituent keys is `extend` with the boolean value `true`.
-
-    The [standard claim period](https://support.activeprospect.com/hc/en-us/articles/204744025-Are-TrustedForm-certificates-available-indefinitely-) still applies.
 
     <security-definitions /> 
 
@@ -62,7 +56,7 @@ paths:
 
         Append `/check_in` to the certificate URL and perform an authenticated `POST`, including a JSON-encoded object, where one of the constituent keys is `extend` with the boolean value `true`, e.g. `{"extend": true}`.
 
-        The [standard claim period](https://support.activeprospect.com/hc/en-us/articles/204744025-Are-TrustedForm-certificates-available-indefinitely-) still applies.        
+        The [standard 72 hour claim period](https://support.activeprospect.com/hc/en-us/articles/204744025-Are-TrustedForm-certificates-available-indefinitely-) still applies.
       tags:
         - Check-In URL Operations
       operationId: check_in
