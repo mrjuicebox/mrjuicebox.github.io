@@ -10,18 +10,20 @@ info:
     ## Claim Period
     The "claim period" is the timeframe within which a TrustedForm Certificate is issued and must be claimed or extended by a TrustedForm Account holder, else it will expire. 
 
-    * The standard claim period is approximately 72 hours. 
-    * The extended claim period is approximately 2,400 hours. 
+    * The standard claim period is approximately 72 hours (3 days). 
+    * The extended claim period is approximately 2,400 hours (3 months). 
 
     Within the claim period, TrustedForm Certificates are visible to anyone with access to the TrustedForm Certificate URL. After this period, only claimed TrustedForm Certificates are accessible by the TrustedForm account holders that claimed them.
 
     ## When to extend the claim period
-    There are situations where lead buyers need to claim a certificate that is more than 72 hours old. The two primary use cases are: 1) call center qualified leads, and 2) aged leads. For these situations ActiveProspect provides this API to extend the claim period to 90 days. 
+    There are situations where lead buyers need to claim a certificate that is more than 72 hours old. The two primary use cases are call center qualified leads, and aged leads. For these situations ActiveProspect provides this API to extend the claim period to 3 months. 
 
     ## Extending the claim period
-    Extending the claim period requires the following actions:
+    **Requirements**
     * [Add the TrustedForm script](https://activeprospect.com/products/trustedform-for-publishers/) to your lead forms.
     * [Sign up for an ActiveProspect account](https://sso.activeprospect.com/registration/new?product=extend) to receive an API Key.
+    
+    Extending the claim period requires the following action:
     * Make an authenticated API call within the initial 72 hour claim period as documented below.
 
     ### Important Notes
@@ -54,11 +56,15 @@ paths:
     post:
       summary: Check-In
       description: |
-        Extending a certificate switches it from the Standard claim period (approximately 72 hours) to the Extended claim period (approximately 2,400 hours).
+        Check-In supports various actions for a TrustedForm Certificate.
+        
+        Append `/check_in` to the certificate URL and perform an authenticated `POST`, including a JSON-encoded object.
+        
+        || Action ||  Type || Description ||
+        | extend | boolean | Changes the claim period for a certificate from the standard 3 days to the extended 3 months.*|
+        
+        * The [standard 72 hour claim period](https://support.activeprospect.com/hc/en-us/articles/204744025-Are-TrustedForm-certificates-available-indefinitely-) applies.
 
-        Append `/check_in` to the certificate URL and perform an authenticated `POST`, including a JSON-encoded object, where one of the constituent keys is `extend` with the boolean value `true`, e.g. `{"extend": true}`.
-
-        The [standard 72 hour claim period](https://support.activeprospect.com/hc/en-us/articles/204744025-Are-TrustedForm-certificates-available-indefinitely-) still applies.
       tags:
         - Check-In URL Operations
       operationId: check_in
