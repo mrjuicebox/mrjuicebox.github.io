@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Check-In</title>
+    <title>TrustedForm Check-In</title>
     <!-- needed for adaptive design -->
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,8 +20,31 @@
     <script>
       Redoc.init('https://raw.githubusercontent.com/mrjuicebox/mrjuicebox.github.io/master/check_in.yaml', 
         {
-          scrollYOffset: 15,
-          hideDownloadButton: true
+          hideDownloadButton: true,
+          theme: { 
+            colors: {
+              primary: {
+                main: '#212B35'
+              },
+              success: {
+                main: '#2ecc71'
+              },
+              warning: {
+                main: '#fcbd40'
+              },
+              error: {
+                main: '#ef4444'
+              },
+              text: {
+                primary: '#212B35'
+              }
+            },
+            typography: {
+              links: {
+                color: '#637381',
+                hover: '#22A7F0'
+              }
+            }
         },
         document.getElementById('redoc-container'))
     </script>
