@@ -50,7 +50,7 @@ externalDocs:
 #     tags:
 #       - check_in
 paths:
-  '/{cert_id}/check_in':
+  '/{certificate_id}/check_in':
     post:
       summary: Check-In
       description: |
@@ -63,7 +63,7 @@ paths:
         - Check-In URL Operations
       operationId: check_in
       parameters:
-        - name: cert_id
+        - name: certificate_id
           in: path
           description: Certificate ID
           required: true
@@ -91,17 +91,17 @@ paths:
         - lang: 'curl'
           source: |
             API_KEY="f3bff7c5140a10ab5ff2e628f433f0bb51d255d1a"
-            CERT_ID="1f1b96c9150d8050e858c043d543bb4eadae0e6f"
+            CERTIFICATE_ID="1f1b96c9150d8050e858c043d543bb4eadae0e6f"
             curl --user "API:$API_KEY" \
                  --header "Accept: application/json" \
                  --request POST \
                  --data '{"extend": true}' \
-                 https://cert.trustedform.com/$CERT_ID/check_in
+                 https://cert.trustedform.com/$CERTIFICATE_ID/check_in
 
 components:
   schemas:
     CheckInResponse:
-      description: An HTTP status code generated from a Certificate URL.
+      description: An HTTP status code generated from a certificate URL.
       properties:
         status_code:
           type: string
