@@ -15,13 +15,14 @@
     </style>
   </head>
   <body>
-    <redoc spec-url='https://raw.githubusercontent.com/mrjuicebox/mrjuicebox.github.io/master/check_in.yaml'></redoc>
     <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"> </script>
     <script>
-      Redoc.init('https://raw.githubusercontent.com/mrjuicebox/mrjuicebox.github.io/master/check_in.yaml', {
-        scrollYOffset: 50,
-        hideDownloadButton: true
-      }, document.getElementById('redoc-container'))
+      Redoc.init('https://raw.githubusercontent.com/mrjuicebox/mrjuicebox.github.io/master/check_in.yaml', 
+        {
+          scrollYOffset: 50,
+          hideDownloadButton: true
+        },
+        document.getElementById('redoc-container'))
     </script>
     <div id="redoc-container"></div>
   </body>
