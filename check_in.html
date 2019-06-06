@@ -22,6 +22,11 @@
         {
           hideDownloadButton: true,
           theme: { 
+            spacing: {
+              unit: 5,
+              sectionHorizontal: ({ spacing }) => spacing.unit * 2,
+              sectionVertical: ({ spacing }) => spacing.unit * 4,
+            },
             breakpoints: {
               small: '25rem',
               medium: '40rem',
