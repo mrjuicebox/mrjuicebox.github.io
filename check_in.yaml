@@ -18,20 +18,14 @@ info:
     ## When to extend the claim period
     Lead buyers want to claim TrustedForm certificates but can't because the certificates have exceeded the standard claim period (72 hours old) and have expired. Common use cases include call center qualified leads and aged leads. For these situations ActiveProspect provides this API to switch certificates to the extended claim period (3 months).
 
-    ## Extending the claim period
-    **Prerequisites**
+    ## Prerequisites
     * [Add the TrustedForm script](https://activeprospect.com/products/trustedform-for-publishers/) to your lead forms.
     * [Sign up for an ActiveProspect account](https://sso.activeprospect.com/registration/new?product=extend) to receive an API Key.
     
-    Extending the claim period requires the following action:
-    * Make an authenticated API call within the standard 72 hour claim period as documented below.
 
-    ### Important Notes
-    * The ActiveProspect API Key is available at [My Account](https://sso.activeprospect.com/account) > Account Settings
-    * Failing to make the authenticated API call within 72 hours of generating the lead will result in the irretrievable deletion of the certificate. Lead buyers relying on TrustedForm to verify and document consent for compliance with regulations like TCPA, CASL, etc. are unlikely to purchase leads without a valid TrustedForm Certificate.
-    * For vendors with an ActiveProspect Account who are TrustedForm clients, **you do not need a separate action to extend certificates**. Claiming your certificates already extends the claim period as long as your account is [enabled for extended claim](https://app.trustedform.com/#settings).
-
+    ## Authentication
     <security-definitions /> 
+    * The ActiveProspect API Key is available at [My Account](https://sso.activeprospect.com/account) > Account Settings
 
   contact:
     name: ActiveProspect Support Team
@@ -52,31 +46,17 @@ externalDocs:
 #     tags:
 #       - check_in
 paths:
-  '/{certificate_id}/check_in':
+  '/check_in':
     post:
       summary: Check-In
       description: |
         Check-In supports various actions for a TrustedForm Certificate.
         
-        Append `/check_in` to the certificate URL and perform an authenticated `POST`, including a JSON-encoded object.
-        
-        | Action | Type | Description |
-        |---|---|
-        | extend | boolean | Changes the claim period for a certificate to the extended 3 months.|
-        
-        The [standard claim period](https://support.activeprospect.com/hc/en-us/articles/204744025-Are-TrustedForm-certificates-available-indefinitely-) still applies for extending a certificate.
+        Failing to make the authenticated API call within the [standard claim period](https://support.activeprospect.com/hc/en-us/articles/204744025) (72 hours of generating the lead) will result in the irretrievable deletion of the certificate.
 
       tags:
-        - Check-In URL Operations
+        - General
       operationId: check_in
-      parameters:
-        - name: certificate_id
-          in: path
-          description: Certificate ID
-          required: true
-          deprecated: false
-          schema:
-            type: string
       responses:
         '200':
           description: Check-In Data
@@ -90,8 +70,15 @@ paths:
           description: Unauthorized
         '404':
           description: Certificate Not Found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckIn'
+        description: checking in
+        required: true
       servers:
-        - url: https://cert.trustedform.com
+        - url: https://cert.trustedform.com/{certificate_id}
       security:
         - API Key: []
       x-code-samples:
@@ -107,11 +94,15 @@ paths:
 
 components:
   schemas:
+    CheckIn:
+      type: object
+      properties:
+        extend:
+          description: Extend Certificate
+          type: boolean
+          default: false
     CheckInResponse:
       description: An HTTP status code generated from a certificate URL.
-      properties:
-        status_code:
-          type: string
 
   securitySchemes:
     API Key:
