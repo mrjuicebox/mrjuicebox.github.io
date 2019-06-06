@@ -46,7 +46,7 @@ externalDocs:
 #     tags:
 #       - check_in
 paths:
-  '/check_in':
+  '{certificate_id}/check_in':
     post:
       summary: Check-In
       description: |
@@ -76,7 +76,7 @@ paths:
         description: checking in
         required: true
       servers:
-        - url: https://cert.trustedform.com/{certificate_id}
+        - url: https://cert.trustedform.com/
       security:
         - API Key: []
       x-code-samples:
