@@ -62,9 +62,9 @@ paths:
         
         | Action | Type | Description |
         |---|---|
-        | extend | boolean | Changes the claim period for a certificate from the standard 3 days to the extended 3 months.*|
+        | extend | boolean | Changes the claim period for a certificate to the extended 3 months.|
         
-        * The [standard 72 hour claim period](https://support.activeprospect.com/hc/en-us/articles/204744025-Are-TrustedForm-certificates-available-indefinitely-) applies.
+        The [standard claim period](https://support.activeprospect.com/hc/en-us/articles/204744025-Are-TrustedForm-certificates-available-indefinitely-) still applies for extending a certificate.
 
       tags:
         - Check-In URL Operations
