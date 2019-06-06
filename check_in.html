@@ -16,10 +16,12 @@
         padding: 5px 0;
         margin: 20px 0 0 0;
       }
+      /*
       .sc-6itmo6-1, .brydhS, .kJHzVU {
         padding: 0 !important;
         margin: 0 !important;
       }
+      */
     </style>
   </head>
   <body>
@@ -28,8 +30,14 @@
     <script>
       Redoc.init('https://raw.githubusercontent.com/mrjuicebox/mrjuicebox.github.io/master/check_in.yaml', 
         {
+          hideLoading: true,
           hideDownloadButton: true,
           theme: { 
+            spacing: {
+              unit: 1,
+              sectionHorizontal: ({ spacing }) => spacing.unit * 40,
+              sectionVertical: ({ spacing }) => spacing.unit * 8,
+            },
             breakpoints: {
               small: '25rem',
               medium: '40rem',
