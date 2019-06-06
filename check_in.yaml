@@ -60,7 +60,8 @@ paths:
         
         Append `/check_in` to the certificate URL and perform an authenticated `POST`, including a JSON-encoded object.
         
-        || Action ||  Type || Description ||
+        | Action | Type | Description |
+        |---|---|
         | extend | boolean | Changes the claim period for a certificate from the standard 3 days to the extended 3 months.*|
         
         * The [standard 72 hour claim period](https://support.activeprospect.com/hc/en-us/articles/204744025-Are-TrustedForm-certificates-available-indefinitely-) applies.
