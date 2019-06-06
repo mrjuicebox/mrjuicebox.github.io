@@ -59,7 +59,7 @@ paths:
       operationId: check_in
       responses:
         '200':
-          description: Check-In Data
+          description: Success
           content:
             application/json:
               schema:
@@ -68,8 +68,6 @@ paths:
           description: Malformed Certificate URL
         '401':
           description: Unauthorized
-        '404':
-          description: Certificate Not Found
       requestBody:
         content:
           application/json:
@@ -100,7 +98,7 @@ components:
         extend:
           description: Extend Certificate
           type: boolean
-          default: false
+          default: true
     CheckInResponse:
       description: An HTTP status code generated from a certificate URL.
 
