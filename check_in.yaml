@@ -50,7 +50,7 @@ paths:
     post:
       summary: Check-In
       description: |
-        Check-In supports various actions for a TrustedForm Certificate.
+        Check-In supports various actions for a TrustedForm Certificate (e.g. extending the claim period on certificates).
         
         Failing to make the authenticated API call within the [standard claim period](https://support.activeprospect.com/hc/en-us/articles/204744025) (72 hours of generating the lead) will result in the irretrievable deletion of the certificate.
 
