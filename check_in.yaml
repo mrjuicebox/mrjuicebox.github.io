@@ -32,8 +32,8 @@ info:
     email: support@activeprospect.com
     url: https://support.activeprospect.com
   x-logo:
-    url: https://activeprospect.com/wp-content/themes/activeprospect/assets/images/activeprospect-logo.svg
-    altText: ActiveProspect logo
+    url: https://mrjuicebox.github.io/ActiveProspect_Full.svg
+    altText: ActiveProspect Inc.
 externalDocs:
   description: TrustedForm Knowledge Base
   url: https://support.activeprospect.com/hc/en-us/categories/200128909-TrustedForm
