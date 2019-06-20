@@ -5,10 +5,10 @@ info:
   termsOfService: 'https://activeprospect.com/trustedform-eula'
   description: |
     # Overview
-    ActiveProspect provides TrustedForm Ping to allow customers to access certificate date with a faster response time than the TrustedForm claim process.
+    ActiveProspect provides TrustedForm Ping to allow customers to access certificate data with a faster response time than the TrustedForm claim process.
 
     # Comparison to Claim
-    TrustedForm Ping does not replace the Claim process. Ping cannot be used to verify or store consent for TCPA compliance. It does not support page scan features, video replay, or certificate storage.
+    TrustedForm Ping does not replace the Claim process. Ping cannot be used to verify or store consent for TCPA compliance. It does not support page scanning, fingerprinting, video replay, or certificate storage.
 
     Please refer to the [TrustedForm Knowledge Base](https://support.activeprospect.com/hc/en-us/articles/201325449) for details on claiming a certificate.
 
@@ -66,9 +66,9 @@ paths:
     get:
       summary: Retrieve Ping Data
       description: |
-        Retrieve ping data directly from a Certificate.
+        Retrieve ping data directly from a certificate.
 
-        When a lead vendor only provides a TrustedForm Certificate URL, Ping data can be retrieved directly without a Ping URL. Append `/ping` to the Certificate URL and perform an authenticated `GET`.
+        When a lead vendor only provides a TrustedForm Certificate URL, Ping data can be retrieved directly without a Ping URL. Append `/ping` to the certificate URL and perform an authenticated `GET`.
       tags:
         - Certificate URL Operations
       operationId: cert_ping
@@ -112,9 +112,9 @@ paths:
       description: |
         Claim a Certificate, ensuring that the Ping URL matches the Certificate URL.
 
-        In a ping-post scenario, there exists the rare possiblity that a nefarious vendor could engage in bait-and-switch: Initially sending buyers a Ping URL that indicates a high probability of conversion, and then sending the auction winner a Certificate associated with a lead that has low conversion probability. To protect against this, it's important to ask TrustedForm to verify that the Ping URL used to generate the bid matches the Certificate being claimed.
+        In a ping-post scenario, there exists the rare possiblity that a nefarious vendor could engage in bait-and-switch: Initially sending buyers a Ping URL that indicates a high probability of conversion, and then sending the auction winner a certificate associated with a lead that has low conversion probability. To protect against this, it's important to ask TrustedForm to verify that the Ping URL used to generate the bid matches the certificate being claimed.
 
-        Please note, this is not exhaustive documentation for claiming a Certificate, it only demonstrates the Ping URL verification feature. For more documentation on claiming a Certificate, please see our [Knowledge Base](https://support.activeprospect.com/hc/en-us/articles/201325449-Claiming-a-TrustedForm-certificate).
+        Please note, this is not exhaustive documentation for claiming a certificate, it only demonstrates the Ping URL verification feature. For more documentation on claiming a certificate, please see our [Knowledge Base](https://support.activeprospect.com/hc/en-us/articles/201325449-Claiming-a-TrustedForm-certificate).
       tags:
         - Certificate URL Operations
       operationId: cert_claim
