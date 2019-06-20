@@ -1,11 +1,11 @@
 openapi: 3.0.0
 info:
   version: 1.0.0
-  title: TrustedForm Check-In API
+  title: TrustedForm Check-In
   termsOfService: 'https://activeprospect.com/trustedform-eula'
   description: |
     # Overview
-    ActiveProspect provides the TrustedForm Check-In API to enable TrustedForm non-client vendors to extend the claim period of certificates for lead buyers who want to claim TrustedForm certificates beyond the standard claim period.
+    ActiveProspect provides TrustedForm Check-In to enable TrustedForm non-client vendors to extend the claim period of certificates for lead buyers who want to claim TrustedForm certificates beyond the standard claim period.
 
     ## Claim Period
     The "claim period" is the timeframe within which a TrustedForm Certificate is issued and must be claimed or extended by a TrustedForm Account holder, else it will expire. 
@@ -99,6 +99,8 @@ components:
           type: boolean
           default: true
     CheckInResponse:
+      type: string
+      example: <empty body>
       description: An HTTP status code generated from a certificate URL.
 
   securitySchemes:
