@@ -99,7 +99,7 @@ components:
           type: boolean
           default: true
     CheckInResponse:
-      type: string
+      type: object
       example: <empty body>
       description: An HTTP status code generated from a certificate URL.
 
