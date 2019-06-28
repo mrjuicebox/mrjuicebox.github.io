@@ -299,23 +299,23 @@ components:
                     States, provinces, prefectures, etc...
                   items:
                     type: string
-            location:
-              type: object
-              description: Information about the page's location.
-              properties:
-                framed:
-                  type: boolean
-                  description: Indicates if the page that generaed the Certificate was in a frame.
-                parent_url:
-                  type: string
-                  nullable: true
-                  description: |
-                    If the page was in a frame, the parent frame's URL.
+        location:
+          type: object
+          description: Information about the page's location.
+          properties:
+            framed:
+              type: boolean
+              description: Indicates if the page that generaed the Certificate was in a frame.
+            parent_url:
+              type: string
+              nullable: true
+              description: |
+                If the page was in a frame, the parent frame's URL.
 
-                    If the parent frame is the `window`, it will be the `window`'s URL.
-                url:
-                  type: string
-                  description: The URL of the page where the Certificate was generated.
+                If the parent frame is the `window`, it will be the `window`'s URL.
+            url:
+              type: string
+              description: The URL of the page where the Certificate was generated.
 
 
   securitySchemes:
