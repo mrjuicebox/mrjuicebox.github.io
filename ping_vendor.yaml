@@ -1,0 +1,384 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: TrustedForm Ping API, Vendor Guide
+  termsOfService: 'https://activeprospect.com/trustedform-eula'
+  description: |
+    # Overview
+    ActiveProspect provides TrustedForm Ping to allow customers to access certificate data with a faster response time than the TrustedForm claim process.
+
+    # Comparison to Claim
+    TrustedForm Ping does not replace the Claim process. Ping cannot be used to verify or store consent for TCPA compliance. It does not support page scanning, fingerprinting, video replay, or certificate storage.
+
+    Please refer to the [TrustedForm Knowledge Base](https://support.activeprospect.com/hc/en-us/articles/201325449) for details on claiming a certificate.
+
+    At present, Ping does not support masked certificates, although support is planned for the future.
+
+    ## Ping URLs versus Certificate URLs
+    In some situations, vendors won't provide a TrustedForm Certificate URL as PII can be accessed via the video replay feature.
+
+    Specifically, in the "ping-post" lead bidding model, vendors typically don't provide PII to buyers during the "ping". They only make it available after the auction has ended and the lead has been purchased (the "post").
+
+    To address this situation, vendors can enable a special TrustedForm script flag that issues a Ping URL in addition to the standard Certificate URL. TrustedForm Ping URLs provide a PII-stripped view of a Certificate suitable for consumption by an automated bid generator, lead vendors can pass the TrustedForm Ping URL during the "ping" step.
+
+    Ping URLs are API-only, they cannot be viewed in a browser like a Certificate URL, and as mentioned, do not contain a video replay.
+
+    Ping URLs begin with `https://ping.trustedform.com`
+
+    Certificate URLs begin with `https://cert.trustedform.com`
+
+    # Generating Ping URLs
+
+    There are two ways to generate Ping URLs:
+
+      - [Directly on your page](#section/Generating-Ping-URLs/Directly-on-your-page), by toggling a flag in the TrustedForm javascript.
+      - [From a Certificate URL](#section/Generating-Ping-URLs/From-a-Certificate-URL), if you are acting as an intermediary.
+
+    ## Directly on your page
+
+    Adding the following TrustedForm script to your page will implement TrustedForm with the Ping flag enabled.
+
+    ```javascript
+    <script type="text/javascript">
+     (function() {
+         var field = 'xxTrustedFormCertUrl';
+         var provideReferrer = false;
+         var invertFieldSensitivity = false;
+         var enablePing = true;
+         var pingField = "xxTrustedFormPingUrl";
+         var tf = document.createElement('script');
+         tf.type = 'text/javascript'; tf.async = true;
+         tf.src = 'http' + ('https:' == document.location.protocol ? 's' : '') +
+                  '://api.trustedform.com/trustedform.js?l=' + new Date().getTime()+Math.random() +
+                  '&provide_referrer=' + escape(provideReferrer) +
+                  '&field=' + escape(field) +
+                  '&invert_field_sensitivity=' + invertFieldSensitivity +
+                  '&enable_ping=' + enablePing +
+                  '&ping_field=' + escape(pingField);
+         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(tf, s);})();
+    </script>
+    <noscript>
+        <img src="http://api.trustedform.com/ns.gif" />
+    </noscript>
+    ```
+
+    Note that the `enablePing` flag has been set to `true`.
+
+    In order to integrate with your backend system, you can optionally change the name of the `<input>` field that TrustedForm adds to your forms by changing the `pingField` argument in the script.
+
+    For more information on the TrustedForm script, and its various options, please see our [Knowledge Base](https://support.activeprospect.com/hc/en-us/articles/201325479-Add-and-Verify-the-TrustedForm-JavaScript-in-a-form).
+
+    ##  From a Certificate URL
+
+    If you're acting as an intermediary between a lead provider and a buyer, and you've only been given a Certificate URL, you may [generate a Ping URL from the Certificate URL](#operation/cert_ping_url).
+
+    For example, `https://cert.trustedform.com/c779c6ff33d4347a1508338bfb4f768cdb16d621/ping_url`
+
+    Please note, each call to this API will generate a new Ping URL, but they are all equally valid.
+
+    A successful call to this endpoint does not guarantee that the Certificate URL you have provided is valid and unexpired. The [standard Certificate claim period](https://support.activeprospect.com/hc/en-us/articles/204744025-Are-TrustedForm-certificates-available-indefinitely-) still applies.
+
+    # Ping Data
+
+    TrustedForm Ping provides buyers with a stripped down and anonymized view of a Certificate, so they may determine a bid for the associated lead.
+
+    The following information is available to buyers via a Ping URL:
+
+    ### Temporal Information
+
+    - Certificate Creation Date
+    - Lead Age
+    - Time on Page
+
+    ### Location Information:
+
+    - Page URL (Query string removed)
+    - Parent Frame's URLs (Query string removed)
+
+    ### Client Device Information:
+
+    - IP Address
+    - Geographic Location (City, State/Province, Country, Postal Code)
+    - User Agent
+    - Screen & Window Dimensions
+    - Device Fingerprint ([see PII Anonymization Notes](#section/PII-Anonymization-Notes))
+
+    ## PII Anonymization Notes
+
+    Personally identifiable information is completely stripped from the Ping Data accessed through a Ping URL, notably from the following:
+
+    - The device fingerprint provided by TrustedForm Ping is not sufficient to personally identify a lead, nor derive any lead data. It is only suitable for determining that two leads came from differently configured devices. Identically configured devices return the same fingerprint. For example, two iPhone XS devices running iOS 12.1 will return the same fingerprint.
+
+    ## Retrieving Ping Data
+
+    If you have a TrustedForm account, you can access a Certificate's Ping data two ways:
+
+     - Querying a modified TrustedForm Certificate URL.
+     - Querying a TrustedForm Ping URL.
+
+    <security-definitions /> 
+
+  contact:
+    name: ActiveProspect Support Team
+    email: support@activeprospect.com
+    url: https://support.activeprospect.com
+  x-logo:
+    url: https://activeprospect.com/wp-content/themes/activeprospect/assets/images/activeprospect-logo.svg
+    altText: ActiveProspect logo
+externalDocs:
+  description: TrustedForm Knowledge Base
+  url: https://support.activeprospect.com/hc/en-us/categories/200128909-TrustedForm
+
+# tags:
+#   - name: ping
+#     description: Operations that can be performed against the Ping API
+#   - name: cert
+#     description: Operations that can be performed against the Certificate API
+# x-tagGroups:
+#   - name: Ping Operations
+#     tags:
+#       - ping
+#   - name: Certificate Operations
+#     tags:
+#       - cert
+paths:
+  '/{cert_id}/ping_url':
+    get:
+      summary: Generate Ping URL
+      description: |
+        When a lead vendor only provides a TrustedForm Certificate URL, you can generate a new Ping URL for the certificate. Append `/ping_url` to the Certificate URL and perform an unauthenticated `GET`.
+
+        Each call to this endpoint will generate a new Ping URL, but they are all equally valid.
+
+        A successful call to this endpoint does not guarantee that the Certificate URL you have provided is valid and unexpired. The [standard certificate claim period](https://support.activeprospect.com/hc/en-us/articles/204744025-Are-TrustedForm-certificates-available-indefinitely-) still applies.
+      tags:
+        - Certificate URL Operations
+      operationId: cert_ping_url
+      parameters:
+        - name: cert_id
+          in: path
+          description: Certificate ID
+          required: true
+          deprecated: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ping URL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PingURLResponse'
+        '400':
+          description: Malformed Certificate URL
+      servers:
+        - url: https://cert.trustedform.com
+      x-code-samples:
+        - lang: 'curl'
+          source: |
+            CERT_ID="1f1b96c9150d8050e858c043d543bb4eadae0e6f"
+            curl --request GET \
+                 https://cert.trustedform.com/$CERT_ID/ping_url
+
+  '/{cert_id}/ping':
+    get:
+      summary: Retrieve Ping Data
+      description: |
+        Retrieve ping data directly from a certificate.
+
+        When a lead vendor only provides a TrustedForm Certificate URL, Ping data can be retrieved directly without a Ping URL. Append `/ping` to the certificate URL and perform an authenticated `GET`.
+      tags:
+        - Certificate URL Operations
+      operationId: cert_ping
+      parameters:
+        - name: cert_id
+          in: path
+          description: Certificate ID
+          required: true
+          deprecated: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ping Data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ping'
+        '400':
+          description: Malformed Certificate URL
+        '401':
+          description: Unauthorized
+        '404':
+          description: Certificate Not Found
+      servers:
+        - url: https://cert.trustedform.com
+      security:
+        - API Key: []
+      x-code-samples:
+        - lang: 'curl'
+          source: |
+            API_KEY="f3bff7c5140a10ab5ff2e628f433f0bb51d255d1a"
+            CERT_ID="1f1b96c9150d8050e858c043d543bb4eadae0e6f"
+            curl --user "API:$API_KEY" \
+                 --request GET \
+                 https://cert.trustedform.com/$CERT_ID/ping
+
+  '/{ping_id}':
+    get:
+      summary: Retrieve Ping Data
+      description: |
+        Retrieve ping data from a Ping URL
+      tags:
+        - Ping URL Operations
+      operationId: ping
+      parameters:
+        - name: ping_id
+          in: path
+          description: Ping ID
+          required: true
+          deprecated: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ping Data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ping'
+        '400':
+          description: Malformed Ping URL
+        '401':
+          description: Unauthorized
+        '404':
+          description: The Certificate represented by this Ping URL was Not Found
+      servers:
+        - url: https://ping.trustedform.com
+      security:
+        - API Key: []
+      x-code-samples:
+        - lang: 'curl'
+          source: |
+            API_KEY="f3bff7c5140a10ab5ff2e628f433f0bb51d255d1a"
+            PING_ID="0.2E7zgi_K8Cqvd-lr69QOr6z5f12cfxfW9sH2yEhEw2j9HX1pgaO3pTA2CKT2fiS_DuvYUwgu.jqwLEs5T_txDm2HZdSj9yw.T3ys69Gus1dGZInuu7VUIQ"
+            curl --user "API:$API_KEY" \
+                 --request GET \
+                 https://ping.trustedform.com/$PING_ID
+
+components:
+  schemas:
+    PingURLResponse:
+      description: A Ping URL, generated from a Certificate URL.
+      properties:
+        url:
+          type: string
+
+    Dimension:
+      description: In pixels.
+      properties:
+        width:
+          type: integer
+          format: int64
+        height:
+          type: integer
+          format: int64
+
+    Ping:
+      type: object
+      properties:
+        age:
+          type: integer
+          format: int64
+          description: |
+            Lead Age, in milliseconds.
+
+            (The time elapsed between the final recorded interaction event and the call to this API)
+        created_at:
+          type: string
+          format: date-time
+          description: |
+            When the certificate was issued, in [ISO8601 format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14).
+        time_on_page:
+          type: integer
+          format: int64
+          description: |
+            The amount of time the user spent interacting with the page, in milliseconds.
+
+            (The time elapsed between `created_at` and the final recorded interaction event)
+        client:
+          type: object
+          description: Information about the user's device and browser.
+          properties:
+            device_fingerprint:
+              type: string
+              description: |
+                A digest (hash) of the user's device/agent configuration. Certificates with the same device fingerprint are not necessarily the same device nor the same user.
+
+                Identically configured devices will have identical device fingerprints e.g. iOS on the same version/hardware.
+
+                This information is suitable for determining that leads came from different devices, it is not suitable for determining that they came from the same device.
+            ip:
+              type: string
+              description: The device's IP address.
+            user_agent:
+              type: string
+              description: The browser's `User-Agent` header.
+            dimensions:
+              description: The device and browser visual display sizes.
+              properties:
+                screen:
+                  description: The device's screen dimensions.
+                  allOf:
+                    - $ref: '#/components/schemas/Dimension'
+                window:
+                  description: The browser's screen dimensions.
+                  allOf:
+                    - $ref: '#/components/schemas/Dimension'
+            geo:
+              type: object
+              description: Geographic information derived from the device's IP address.
+              properties:
+                city:
+                  type: string
+                  description: The device's city.
+                country:
+                  type: string
+                  description: The device's country.
+                postal_code:
+                  type: string
+                  description: The device's postal code.
+                subdivisions:
+                  type: array
+                  description: |
+                    The device location's political subdivisions.
+
+                    States, provinces, prefectures, etc...
+                  items:
+                    type: string
+        location:
+          type: object
+          description: Information about the page's location.
+          properties:
+            framed:
+              type: boolean
+              description: Indicates if the page that generaed the Certificate was in a frame.
+            parent_url:
+              type: string
+              nullable: true
+              description: |
+                If the page was in a frame, the parent frame's URL.
+
+                If the parent frame is the `window`, it will be the `window`'s URL.
+            url:
+              type: string
+              description: The URL of the page where the Certificate was generated.
+
+
+  securitySchemes:
+    API Key:
+      scheme: basic
+      description: >
+        TrustedForm uses [HTTP Basic Authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) with the username `API` and your API key as the password.
+        For example: `API:1f1b96c9150d8050e858c043d543bb4eadae0e6f`
+      type: http
