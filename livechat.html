@@ -26,13 +26,19 @@
 	<p>I hereby consent to receive <a href="https://en.wikipedia.org/wiki/Auto_dialer">autodialed</a> and/or pre-recorded telemarketing calls from or on behalf of Sample Company at the telephone number I provided above, including my wireless number, if applicable. I understand that consent is not a condition of purchase.</p>
 	<!-- Start of LiveChat (www.livechatinc.com) code -->
 	<script type="text/javascript">
-	  window.__lc = window.__lc || {};
-	  window.__lc.license = 11282832;
-	  (function() {
-	    var lc = document.createElement('script'); lc.type = 'text/javascript'; lc.async = true;
-	    lc.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cdn.livechatinc.com/tracking.js';
-	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(lc, s);
-	  })();
+		window.__lc = window.__lc || {};
+		window.__lc.license = 11282832;
+		(function() {
+			var lc = document.createElement('script'); lc.type = 'text/javascript'; lc.async = true;
+			lc.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cdn.livechatinc.com/tracking.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(lc, s);
+		})();
+		
+		var LC_API = LC_API || {};
+		LC_API.on_chat_window_opened = function()
+		{
+		  console.log('Howdy!')
+		};
 	</script>
 	<noscript>
 	<a href="https://www.livechatinc.com/chat-with/11282832/" rel="nofollow">Chat with us</a>,
