@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>TrustedForm Default Test</title>
+	<style>
+		body {background-color: #253842; font-family: "proxima nova", sans-serif; color: #6fb3c1; width: 470px; margin: 0 auto; padding: 20px; font-size: 18px;}
+		input {background-color: #6fb3c1!important; display: block; margin: 10px 0; min-width: 250px; padding: 6px 0; font-size: 14px;}
+		input[type="checkbox"] {display: inline;}
+		input[type="text"], input[type="password"], input[type="email"], textarea {color: #fff;}
+		a {color:#fff;}
+	</style>
+</head>
+<body>
+	<div id="test-form">
+        <h1>TrustedForm Default Test</h1>
+		<form method="post" autocomplete="on" name="strongbad" action="https://app.leadconduit.com/flows/5d83f55475fe7fe5a5f957f8/sources/57768d274aab1d897484807e/submit?redir_url=http%3A%2F%2Factiveprospect.com">
+			<fieldset>
+				<legend>Contact Info</legend>
+				<label for="firstName">First Name</label>
+				<input name="first_name" id="firstName" placeholder="First name" required autocomplete="given-name">
+				<label for="lastName">Last Name</label>
+				<input name="last_name" id="lastName" placeholder="Last name" required autocomplete="family-name">
+				<label for="frmEmailA">Email</label>
+				<input type="email" name="email" id="frmEmailA" placeholder="name@example.com" required autocomplete="email">
+				<label for="frmPhoneNumA">Phone</label>
+				<input type="tel" name="phone" id="frmPhoneNumA" placeholder="+1-650-450-1212" required autocomplete="tel">
+			</fieldset>
+			<p>
+				<label>
+				<input type="checkbox" value="terms">
+				I hereby consent to receive <a href="https://en.wikipedia.org/wiki/Auto_dialer">autodialed</a> and/or pre-recorded telemarketing calls from or on behalf of Sample Company at the telephone number I provided above, including my wireless number, if applicable. I understand that consent is not a condition of purchase.
+				</label>
+			</p>
+			<p>
+				<button>Sign up</button>
+				<button type="reset">Reset form</button>
+			</p>
+		</form>
+	</div>
+	<!-- BEGIN TRUSTEDFORM SCRIPT -->
+	<script type="text/javascript">
+	  (function() {
+	      var field = 'xxTrustedFormCertUrl';
+	      var provideReferrer = false;
+	      var invertFieldSensitivity = false;
+	      var tf = document.createElement('script');
+	      tf.type = 'text/javascript'; tf.async = true;
+	      tf.src = 'http' + ('https:' == document.location.protocol ? 's' : '') +
+	        '://api.trustedform.com/trustedform.js?provide_referrer=' + escape(provideReferrer) + '&field=' + escape(field) + '&l='+new Date().getTime()+Math.random() + '&invert_field_sensitivity=' + invertFieldSensitivity;
+	      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(tf, s); }
+	  )();
+	</script>
+	<noscript>
+	    <img src="http://api.trustedform.com/ns.gif" />
+	</noscript>
+	<!-- END TRUSTEDFORM SCRIPT -->
+	<script type="text/javascript">
+	    function trustedFormCertUrlCallback(certificateUrl) {
+	        console.log(certificateUrl);
+	    }
+	</script>
+</body>
+</html>
