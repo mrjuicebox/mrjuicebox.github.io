@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>TrustedForm Default Test</title>
+	<style>
+		body {background-color: #253842; font-family: "proxima nova", sans-serif; color: #6fb3c1; width: 470px; margin: 0 auto; padding: 20px; font-size: 18px;}
+		input {background-color: #6fb3c1!important; display: block; margin: 10px 0; min-width: 250px; padding: 6px 0; font-size: 14px;}
+		input[type="checkbox"] {display: inline;}
+		input[type="text"], input[type="password"], input[type="email"], textarea {color: #fff;}
+		a {color:#fff;}
+	</style>
+</head>
+<body>
+	<div id="test-form">
+        <h1>TrustedForm Default Test</h1>
+		<script charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/shell.js"></script>
+		<script>
+		  hbspt.forms.create({
+			portalId: "6302937",
+			formId: "6cf03c26-2a70-47c2-a670-b55e6de3e8c8"
+		});
+		</script>
+	</div>
+	<!-- BEGIN TRUSTEDFORM SCRIPT -->
+	<script type="text/javascript">
+	  (function() {
+	      var field = 'xxTrustedFormCertUrl';
+	      var provideReferrer = false;
+	      var invertFieldSensitivity = false;
+	      var tf = document.createElement('script');
+	      tf.type = 'text/javascript'; tf.async = true;
+	      tf.src = 'http' + ('https:' == document.location.protocol ? 's' : '') +
+	        '://api.trustedform.com/trustedform.js?provide_referrer=' + escape(provideReferrer) + '&field=' + escape(field) + '&l='+new Date().getTime()+Math.random() + '&invert_field_sensitivity=' + invertFieldSensitivity;
+	      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(tf, s); }
+	  )();
+	</script>
+	<noscript>
+	    <img src="http://api.trustedform.com/ns.gif" />
+	</noscript>
+	<!-- END TRUSTEDFORM SCRIPT -->
+	<script type="text/javascript">
+	    function trustedFormCertUrlCallback(certificateUrl) {
+	        console.log(certificateUrl);
+	    }
+	</script>
+</body>
+</html>
