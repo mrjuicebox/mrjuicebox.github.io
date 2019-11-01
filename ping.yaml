@@ -5,43 +5,29 @@ info:
   termsOfService: 'https://activeprospect.com/trustedform-eula'
   description: |
     # Overview
-    ActiveProspect provides TrustedForm Ping to allow customers to access certificate data with a faster response time than the TrustedForm claim process.
+    ActiveProspect provides TrustedForm Ping to allow customers to access a broader set of data with a faster response time than claiming a certificate.
 
-    # Comparison to Claim
-    TrustedForm Ping does not replace the Claim process. Ping cannot be used to verify or store consent for TCPA compliance. It does not support page scanning, fingerprinting, video replay, or certificate storage.
+    # Comparison to certificate Claim
+    TrustedForm Ping does not replace claiming a certificate. Ping cannot be used to verify or store consent for TCPA compliance, meaning Ping does not support page scanning or fingerprinting and the certificate will not be stored in your account.
 
     Please refer to the [TrustedForm Knowledge Base](https://support.activeprospect.com/hc/en-us/articles/201325449) for details on claiming a certificate.
 
-    At present, Ping does not support masked certificates, although support is planned for the future.
+    # User Interaction Notes
 
-    ## Ping URLs versus Certificate URLs
-    In some situations, vendors won't provide a TrustedForm Certificate URL as PII can be accessed via the video replay feature.
+    ## Autofill
+    Autofill is not directly detectable. However, if a field value isn't "built up" over a number of changes, you can assume it was either autofilled or directly written to by vendor code.
 
-    Specifically, in the "ping-post" lead bidding model, vendors typically don't provide PII to buyers during the "ping". They only make it available after the auction has ended and the lead has been purchased (the "post").
+    ## Typing Speed
+    Ping doesn't explicitly provide typing speed analysis, but the TrustedForm script does record a timestamp for each keystroke (`KeyDown` events).
 
-    To address this situation, vendors can enable a special TrustedForm script flag that issues a Ping URL in addition to the standard Certificate URL. TrustedForm Ping URLs provide a PII-stripped view of a Certificate suitable for consumption by an automated bid generator, lead vendors can pass the TrustedForm Ping URL during the "ping" step.
-
-    Ping URLs are API-only, they cannot be viewed in a browser like a Certificate URL, and as mentioned, do not contain a video replay.
-
-    Ping URLs begin with `https://ping.trustedform.com`
-
-    Certificate URLs begin with `https://cert.trustedform.com`
-
-    # Retrieving Ping Data
-
-    A certificate's Ping data can be accessed two ways:
-
-     - Querying a modified TrustedForm Certificate URL
-     - Querying a vendor-provided TrustedForm Ping URL
-
-    <security-definitions /> 
+    From the provided data, clients may either explicitly compute their own typing speed analysis, or feed the undigested data into a machine learning model.
 
   contact:
     name: ActiveProspect Support Team
     email: support@activeprospect.com
     url: https://support.activeprospect.com
   x-logo:
-    url: https://mrjuicebox.github.io/ActiveProspect_Full.svg
+    url: https://activeprospect.com/wp-content/themes/activeprospect/assets/images/activeprospect-logo.svg
     altText: ActiveProspect logo
 servers:
   - url: https://ping.trustedform.com
@@ -62,24 +48,12 @@ externalDocs:
 #     tags:
 #       - cert
 paths:
-  '/{cert_id}/ping':
+  '/':
     get:
-      summary: Retrieve Ping Data
-      description: |
-        Retrieve ping data directly from a certificate.
-
-        When a lead vendor only provides a TrustedForm Certificate URL, Ping data can be retrieved directly without a Ping URL. Append `/ping` to the certificate URL and perform an authenticated `GET`.
+      summary: Ping Data
       tags:
         - Certificate URL Operations
       operationId: cert_ping
-      parameters:
-        - name: cert_id
-          in: path
-          description: Certificate ID
-          required: true
-          deprecated: false
-          schema:
-            type: string
       responses:
         '200':
           description: Ping Data
@@ -93,127 +67,6 @@ paths:
           description: Unauthorized
         '404':
           description: Certificate Not Found
-      servers:
-        - url: https://cert.trustedform.com
-      security:
-        - API Key: []
-      x-code-samples:
-        - lang: 'curl'
-          source: |
-            API_KEY="f3bff7c5140a10ab5ff2e628f433f0bb51d255d1a"
-            CERT_ID="1f1b96c9150d8050e858c043d543bb4eadae0e6f"
-            curl --user "API:$API_KEY" \
-                 --request GET \
-                 https://cert.trustedform.com/$CERT_ID/ping
-
-  '/{cert_id}':
-    post:
-      summary: Claim a Certficate
-      description: |
-        Claim a Certificate, ensuring that the Ping URL matches the Certificate URL.
-
-        In a ping-post scenario, there exists the rare possiblity that a nefarious vendor could engage in bait-and-switch: Initially sending buyers a Ping URL that indicates a high probability of conversion, and then sending the auction winner a certificate associated with a lead that has low conversion probability. To protect against this, it's important to ask TrustedForm to verify that the Ping URL used to generate the bid matches the certificate being claimed.
-
-        Please note, this is not exhaustive documentation for claiming a certificate, it only demonstrates the Ping URL verification feature. For more documentation on claiming a certificate, please see our [Knowledge Base](https://support.activeprospect.com/hc/en-us/articles/201325449-Claiming-a-TrustedForm-certificate).
-      tags:
-        - Certificate URL Operations
-      operationId: cert_claim
-      parameters:
-        - name: cert_id
-          in: path
-          description: Certificate ID
-          required: true
-          deprecated: false
-          schema:
-            type: string
-        - name: ping_url
-          in: query
-          description: Ping URL
-          required: false
-          deprecated: false
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Certificate Claim Data
-        '400':
-          description: Malformed Certificate URL
-        '401':
-          description: Unauthorized
-        '404':
-          description: Certificate Not Found
-        '412':
-          description: Ping URL doesn't match this Certificate
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: object
-                    properties:
-                      detail:
-                        type: string
-                        enum:
-                          - "the provided ping url does not match the requested certificate"
-      servers:
-        - url: https://cert.trustedform.com
-      security:
-        - API Key: []
-      x-code-samples:
-        - lang: 'curl'
-          source: |
-            API_KEY="f3bff7c5140a10ab5ff2e628f433f0bb51d255d1a"
-            CERT_ID="1f1b96c9150d8050e858c043d543bb4eadae0e6f"
-            PING_URL="https://ping.trustedform.com/non-matching-ping-id"
-            curl --verbose \
-                 --user "API:$API_KEY" \
-                 --header "Accept: application/json" \
-                 --request POST \
-                 --data "ping_url=$PING_URL" \
-                 https://cert.trustedform.com/$CERT_ID
-
-  '/{ping_id}':
-    get:
-      summary: Retrieve Ping Data
-      description: |
-        Retrieve ping data from a Ping URL
-      tags:
-        - Ping URL Operations
-      operationId: ping
-      parameters:
-        - name: ping_id
-          in: path
-          description: Ping ID
-          required: true
-          deprecated: false
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Ping Data
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Ping'
-        '400':
-          description: Malformed Ping URL
-        '401':
-          description: Unauthorized
-        '404':
-          description: The Certificate represented by this Ping URL was Not Found
-      servers:
-        - url: https://ping.trustedform.com
-      security:
-        - API Key: []
-      x-code-samples:
-        - lang: 'curl'
-          source: |
-            API_KEY="f3bff7c5140a10ab5ff2e628f433f0bb51d255d1a"
-            PING_ID="0.2E7zgi_K8Cqvd-lr69QOr6z5f12cfxfW9sH2yEhEw2j9HX1pgaO3pTA2CKT2fiS_DuvYUwgu.jqwLEs5T_txDm2HZdSj9yw.T3ys69Gus1dGZInuu7VUIQ"
-            curl --user "API:$API_KEY" \
-                 --request GET \
-                 https://ping.trustedform.com/$PING_ID
 
 components:
   schemas:
@@ -226,6 +79,193 @@ components:
         height:
           type: integer
           format: int64
+
+    EventSharedFields:
+      type: object
+      properties:
+        time:
+          type: integer
+          description: The number of milliseconds after `created_at` that this event took place.
+
+    EventElementIDField:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: An internal element-tracking ID, useful for determining if two events originated from the same DOM element.
+
+    Point:
+      type: object
+      properties:
+        x:
+          type: integer
+          format: int64
+          description: Relative to window origin (upper left corner).
+        y:
+          type: integer
+          format: int64
+          description: Relative to window origin (upper left corner).
+
+    MouseMovement:
+      allOf:
+        - type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - mouse_movement
+              description: This event is rate limited. Please let us know if this is a problem.
+        - $ref: '#/components/schemas/Point'
+        - $ref: '#/components/schemas/EventSharedFields'
+
+    MouseClick:
+      allOf:
+        - type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - mouse_click
+              description: Currently only records left clicks.
+        - $ref: '#/components/schemas/Point'
+        - $ref: '#/components/schemas/EventSharedFields'
+
+    CheckboxChecked:
+      allOf:
+        - type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - checkbox_checked
+            selected:
+              type: boolean
+              description: Indicates if the checkbox element took on the `checked` attribute.
+        - $ref: '#/components/schemas/EventElementIDField'
+        - $ref: '#/components/schemas/EventSharedFields'
+
+    InputFieldValueChanged:
+      allOf:
+        - type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - input_value
+              description: |
+                This event only fires for `<input>` or `<textarea>` elements.
+
+                This is different from a key press and only fires when our script determines that the value of a text field has changed. This most likely was because of a keypress, but isn't necessarily the case. Hence, it shouldn't be used for typing speed analysis, use `KeyDown` events instead.
+            length:
+              type: integer
+              format: int64
+              description: The number of UTF-8 characters in the value.
+        - $ref: '#/components/schemas/EventElementIDField'
+        - $ref: '#/components/schemas/EventSharedFields'
+
+
+    KeyDown:
+      type: object
+      discriminator:
+        propertyName: sensitive
+        mapping:
+          true: '#/components/schemas/KeyDownSensitive'
+          false: '#/components/schemas/KeyDownNotSensitive'
+      allOf:
+        - type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - key_down
+              description: This event only fires for `<input>` or `<textarea>` elements.
+            modifiers:
+              type: array
+              items:
+                type: string
+                enum:
+                  - alt
+                  - ctrl
+                  - meta
+                  - shift
+            sensitive:
+              type: string
+              description: Indicates that the vendor has marked the element as [sensitive](https://support.activeprospect.com/hc/en-us/articles/115004142826-Flagging-Sensitive-Data-Fields).
+
+    KeyDownSensitive:
+      allOf:
+        - $ref: '#/components/schemas/KeyDown'
+        - type: object
+          properties:
+            key:
+              type: string
+              enum:
+                - printable
+              description: |
+                May also be a key defined in [KeyboardEvent.key](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values)
+
+                This field will never be an actual printable character, as the Ping API removes PII.
+        - $ref: '#/components/schemas/EventElementIDField'
+        - $ref: '#/components/schemas/EventSharedFields'
+
+    KeyDownNotSensitive:
+      allOf:
+        - $ref: '#/components/schemas/KeyDown'
+        - type: object
+          properties:
+            key:
+              type: string
+              enum:
+                - letter
+                - digit
+                - other_printable
+              description: |
+                May also be a key defined in [KeyboardEvent.key](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values)
+
+                This field will never be an actual printable character, as the Ping API removes PII.
+        - $ref: '#/components/schemas/EventElementIDField'
+        - $ref: '#/components/schemas/EventSharedFields'
+
+
+    SelectBoxChanged:
+      allOf:
+        - type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - select
+              description: Indicates that the user selected an option from a `<select>` element
+            selected:
+              type: string
+              description: The value of the selected `<option>`
+        - $ref: '#/components/schemas/EventElementIDField'
+        - $ref: '#/components/schemas/EventSharedFields'
+
+    RadioButtonSelected:
+      allOf:
+        - type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - radio
+              description: The presence of this event indicates that a `<radio>` element was selected, and the other elements in the radio group deselected.
+        - $ref: '#/components/schemas/EventElementIDField'
+        - $ref: '#/components/schemas/EventSharedFields'
+
+    PageScrolled:
+      allOf:
+        - type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - scroll
+              description: Not currently implemented in Video Replays.
+        - $ref: '#/components/schemas/Point'
+        - $ref: '#/components/schemas/EventElementIDField'
+        - $ref: '#/components/schemas/EventSharedFields'
 
     Ping:
       type: object
@@ -249,6 +289,18 @@ components:
             The amount of time the user spent interacting with the page, in milliseconds.
 
             (The time elapsed between `created_at` and the final recorded interaction event)
+        events:
+          description: User interaction events recorded by TrustedForm.
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/MouseMovement'
+              - $ref: '#/components/schemas/MouseClick'
+              - $ref: '#/components/schemas/CheckboxChecked'
+              - $ref: '#/components/schemas/InputFieldValueChanged'
+              - $ref: '#/components/schemas/KeyDown'
+              - $ref: '#/components/schemas/SelectBoxChanged'
+              - $ref: '#/components/schemas/RadioButtonSelected'
+              - $ref: '#/components/schemas/PageScrolled'
         client:
           type: object
           description: Information about the user's device and browser.
@@ -299,29 +351,20 @@ components:
                     States, provinces, prefectures, etc...
                   items:
                     type: string
-        location:
-          type: object
-          description: Information about the page's location.
-          properties:
-            framed:
-              type: boolean
-              description: Indicates if the page that generaed the Certificate was in a frame.
-            parent_url:
-              type: string
-              nullable: true
-              description: |
-                If the page was in a frame, the parent frame's URL.
+            location:
+              type: object
+              description: Information about the page's location.
+              properties:
+                framed:
+                  type: boolean
+                  description: Indicates if the page that generaed the Certificate was in a frame.
+                parent_url:
+                  type: string
+                  nullable: true
+                  description: |
+                    If the page was in a frame, the parent frame's URL.
 
-                If the parent frame is the `window`, it will be the `window`'s URL.
-            url:
-              type: string
-              description: The URL of the page where the Certificate was generated.
-
-
-  securitySchemes:
-    API Key:
-      scheme: basic
-      description: >
-        TrustedForm uses [HTTP Basic Authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) with the username `API` and your API key as the password.
-        For example: `API:1f1b96c9150d8050e858c043d543bb4eadae0e6f`
-      type: http
+                    If the parent frame is the `window`, it will be the `window`'s URL.
+                url:
+                  type: string
+                  description: The URL of the page where the Certificate was generated.
