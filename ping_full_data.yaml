@@ -5,14 +5,14 @@ info:
   termsOfService: 'https://activeprospect.com/trustedform-eula'
   description: |
     # Overview
-    ActiveProspect provides TrustedForm Ping to allow customers to access a broader set of data, including the event log, with a faster response time than the standard TrustedForm claim action.
+    ActiveProspect provides TrustedForm Ping to allow customers to access a broader set of data with a faster response time than claiming a certificate.
 
     # Comparison to certificate Claim
-    TrustedForm Ping does not replace the certificate claim action. Ping cannot be used to verify or store consent for TCPA compliance. It does not support page scan features, replay, or certificate storage.
+    TrustedForm Ping does not replace claiming a certificate. Ping cannot be used to verify or store consent for TCPA compliance, meaning Ping does not support page scanning or fingerprinting and the certificate will not be stored in your account.
 
     Please refer to the [TrustedForm Knowledge Base](https://support.activeprospect.com/hc/en-us/articles/201325449) for details on claiming a certificate.
 
-    # User Interation Notes
+    # User Interaction Notes
 
     ## Autofill
     Autofill is not directly detectable. However, if a field value isn't "built up" over a number of changes, you can assume it was either autofilled or directly written to by vendor code.
@@ -54,14 +54,6 @@ paths:
       tags:
         - Certificate URL Operations
       operationId: cert_ping
-      parameters:
-        - name: cert_id
-          in: path
-          description: Certificate ID
-          required: true
-          deprecated: false
-          schema:
-            type: string
       responses:
         '200':
           description: Ping Data
