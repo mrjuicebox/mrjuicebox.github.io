@@ -1,0 +1,378 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: TrustedForm Ping
+  termsOfService: 'https://activeprospect.com/trustedform-eula'
+  description: |
+    # Overview
+    ActiveProspect provides TrustedForm Ping to allow customers to access a broader set of data, including the event log, with a faster response time than the standard TrustedForm claim action.
+
+    # Comparison to certificate Claim
+    TrustedForm Ping does not replace the certificate claim action. Ping cannot be used to verify or store consent for TCPA compliance. It does not support page scan features, replay, or certificate storage.
+
+    Please refer to the [TrustedForm Knowledge Base](https://support.activeprospect.com/hc/en-us/articles/201325449) for details on claiming a certificate.
+
+    # User Interation Notes
+
+    ## Autofill
+    Autofill is not directly detectable. However, if a field value isn't "built up" over a number of changes, you can assume it was either autofilled or directly written to by vendor code.
+
+    ## Typing Speed
+    Ping doesn't explicitly provide typing speed analysis, but the TrustedForm script does record a timestamp for each keystroke (`KeyDown` events).
+
+    From the provided data, clients may either explicitly compute their own typing speed analysis, or feed the undigested data into a machine learning model.
+
+  contact:
+    name: ActiveProspect Support Team
+    email: support@activeprospect.com
+    url: https://support.activeprospect.com
+  x-logo:
+    url: https://activeprospect.com/wp-content/themes/activeprospect/assets/images/activeprospect-logo.svg
+    altText: ActiveProspect logo
+servers:
+  - url: https://ping.trustedform.com
+externalDocs:
+  description: TrustedForm Knowledge Base
+  url: https://support.activeprospect.com/hc/en-us/categories/200128909-TrustedForm
+
+# tags:
+#   - name: ping
+#     description: Operations that can be performed against the Ping API
+#   - name: cert
+#     description: Operations that can be performed against the Certificate API
+# x-tagGroups:
+#   - name: Ping Operations
+#     tags:
+#       - ping
+#   - name: Certificate Operations
+#     tags:
+#       - cert
+paths:
+  '/':
+    get:
+      summary: Ping Data
+      tags:
+        - Certificate URL Operations
+      operationId: cert_ping
+      parameters:
+        - name: cert_id
+          in: path
+          description: Certificate ID
+          required: true
+          deprecated: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ping Data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ping'
+        '400':
+          description: Malformed Certificate URL
+        '401':
+          description: Unauthorized
+        '404':
+          description: Certificate Not Found
+
+components:
+  schemas:
+    Dimension:
+      description: In pixels.
+      properties:
+        width:
+          type: integer
+          format: int64
+        height:
+          type: integer
+          format: int64
+
+    EventSharedFields:
+      type: object
+      properties:
+        time:
+          type: integer
+          description: The number of milliseconds after `created_at` that this event took place.
+
+    EventElementIDField:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: An internal element-tracking ID, useful for determining if two events originated from the same DOM element.
+
+    Point:
+      type: object
+      properties:
+        x:
+          type: integer
+          format: int64
+          description: Relative to window origin (upper left corner).
+        y:
+          type: integer
+          format: int64
+          description: Relative to window origin (upper left corner).
+
+    MouseMovement:
+      allOf:
+        - type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - mouse_movement
+              description: This event is rate limited. Please let us know if this is a problem.
+        - $ref: '#/components/schemas/Point'
+        - $ref: '#/components/schemas/EventSharedFields'
+
+    MouseClick:
+      allOf:
+        - type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - mouse_click
+              description: Currently only records left clicks.
+        - $ref: '#/components/schemas/Point'
+        - $ref: '#/components/schemas/EventSharedFields'
+
+    CheckboxChecked:
+      allOf:
+        - type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - checkbox_checked
+            selected:
+              type: boolean
+              description: Indicates if the checkbox element took on the `checked` attribute.
+        - $ref: '#/components/schemas/EventElementIDField'
+        - $ref: '#/components/schemas/EventSharedFields'
+
+    InputFieldValueChanged:
+      allOf:
+        - type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - input_value
+              description: |
+                This event only fires for `<input>` or `<textarea>` elements.
+
+                This is different from a key press and only fires when our script determines that the value of a text field has changed. This most likely was because of a keypress, but isn't necessarily the case. Hence, it shouldn't be used for typing speed analysis, use `KeyDown` events instead.
+            length:
+              type: integer
+              format: int64
+              description: The number of UTF-8 characters in the value.
+        - $ref: '#/components/schemas/EventElementIDField'
+        - $ref: '#/components/schemas/EventSharedFields'
+
+
+    KeyDown:
+      type: object
+      discriminator:
+        propertyName: sensitive
+        mapping:
+          true: '#/components/schemas/KeyDownSensitive'
+          false: '#/components/schemas/KeyDownNotSensitive'
+      allOf:
+        - type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - key_down
+              description: This event only fires for `<input>` or `<textarea>` elements.
+            modifiers:
+              type: array
+              items:
+                type: string
+                enum:
+                  - alt
+                  - ctrl
+                  - meta
+                  - shift
+            sensitive:
+              type: string
+              description: Indicates that the vendor has marked the element as [sensitive](https://support.activeprospect.com/hc/en-us/articles/115004142826-Flagging-Sensitive-Data-Fields).
+
+    KeyDownSensitive:
+      allOf:
+        - $ref: '#/components/schemas/KeyDown'
+        - type: object
+          properties:
+            key:
+              type: string
+              enum:
+                - printable
+              description: |
+                May also be a key defined in [KeyboardEvent.key](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values)
+
+                This field will never be an actual printable character, as the Ping API removes PII.
+        - $ref: '#/components/schemas/EventElementIDField'
+        - $ref: '#/components/schemas/EventSharedFields'
+
+    KeyDownNotSensitive:
+      allOf:
+        - $ref: '#/components/schemas/KeyDown'
+        - type: object
+          properties:
+            key:
+              type: string
+              enum:
+                - letter
+                - digit
+                - other_printable
+              description: |
+                May also be a key defined in [KeyboardEvent.key](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values)
+
+                This field will never be an actual printable character, as the Ping API removes PII.
+        - $ref: '#/components/schemas/EventElementIDField'
+        - $ref: '#/components/schemas/EventSharedFields'
+
+
+    SelectBoxChanged:
+      allOf:
+        - type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - select
+              description: Indicates that the user selected an option from a `<select>` element
+            selected:
+              type: string
+              description: The value of the selected `<option>`
+        - $ref: '#/components/schemas/EventElementIDField'
+        - $ref: '#/components/schemas/EventSharedFields'
+
+    RadioButtonSelected:
+      allOf:
+        - type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - radio
+              description: The presence of this event indicates that a `<radio>` element was selected, and the other elements in the radio group deselected.
+        - $ref: '#/components/schemas/EventElementIDField'
+        - $ref: '#/components/schemas/EventSharedFields'
+
+    PageScrolled:
+      allOf:
+        - type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - scroll
+              description: Not currently implemented in Video Replays.
+        - $ref: '#/components/schemas/Point'
+        - $ref: '#/components/schemas/EventElementIDField'
+        - $ref: '#/components/schemas/EventSharedFields'
+
+    Ping:
+      type: object
+      properties:
+        age:
+          type: integer
+          format: int64
+          description: |
+            Lead Age, in milliseconds.
+
+            (The time elapsed between the final recorded interaction event and the call to this API)
+        created_at:
+          type: string
+          format: date-time
+          description: |
+            When the certificate was issued, in [ISO8601 format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14).
+        time_on_page:
+          type: integer
+          format: int64
+          description: |
+            The amount of time the user spent interacting with the page, in milliseconds.
+
+            (The time elapsed between `created_at` and the final recorded interaction event)
+        events:
+          description: User interaction events recorded by TrustedForm.
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/MouseMovement'
+              - $ref: '#/components/schemas/MouseClick'
+              - $ref: '#/components/schemas/CheckboxChecked'
+              - $ref: '#/components/schemas/InputFieldValueChanged'
+              - $ref: '#/components/schemas/KeyDown'
+              - $ref: '#/components/schemas/SelectBoxChanged'
+              - $ref: '#/components/schemas/RadioButtonSelected'
+              - $ref: '#/components/schemas/PageScrolled'
+        client:
+          type: object
+          description: Information about the user's device and browser.
+          properties:
+            device_fingerprint:
+              type: string
+              description: |
+                A digest (hash) of the user's device/agent configuration. Certificates with the same device fingerprint are not necessarily the same device nor the same user.
+
+                Identically configured devices will have identical device fingerprints e.g. iOS on the same version/hardware.
+
+                This information is suitable for determining that leads came from different devices, it is not suitable for determining that they came from the same device.
+            ip:
+              type: string
+              description: The device's IP address.
+            user_agent:
+              type: string
+              description: The browser's `User-Agent` header.
+            dimensions:
+              description: The device and browser visual display sizes.
+              properties:
+                screen:
+                  description: The device's screen dimensions.
+                  allOf:
+                    - $ref: '#/components/schemas/Dimension'
+                window:
+                  description: The browser's screen dimensions.
+                  allOf:
+                    - $ref: '#/components/schemas/Dimension'
+            geo:
+              type: object
+              description: Geographic information derived from the device's IP address.
+              properties:
+                city:
+                  type: string
+                  description: The device's city.
+                country:
+                  type: string
+                  description: The device's country.
+                postal_code:
+                  type: string
+                  description: The device's postal code.
+                subdivisions:
+                  type: array
+                  description: |
+                    The device location's political subdivisions.
+
+                    States, provinces, prefectures, etc...
+                  items:
+                    type: string
+            location:
+              type: object
+              description: Information about the page's location.
+              properties:
+                framed:
+                  type: boolean
+                  description: Indicates if the page that generaed the Certificate was in a frame.
+                parent_url:
+                  type: string
+                  nullable: true
+                  description: |
+                    If the page was in a frame, the parent frame's URL.
+
+                    If the parent frame is the `window`, it will be the `window`'s URL.
+                url:
+                  type: string
+                  description: The URL of the page where the Certificate was generated.
